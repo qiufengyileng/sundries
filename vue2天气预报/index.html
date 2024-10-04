@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.13/vue.js"></script>
+  <script src="api.js"></script>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      border: none;
+      list-style: none;
+    }
+    .cityshow{
+      position: absolute;
+      left: 60px;
+      top: 30px;
+      width: 150px;
+      height: 60px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family:'宋体';
+      line-height: 60px;
+      text-align: center;
+      /* background-color: pink; */
+      z-index: 1;
+    }
+    .box1{
+      position: relative;
+      margin: auto;
+      margin-top: 5px;
+      width: 1500px;
+      height: 500px;
+      /* background-color: yellow; */
+    }
+    .search{
+      position: absolute;
+      right: 130px;
+      top: 20px;
+    }
+    .search input{
+      width: 240px;
+      height: 30px;
+      background-color: #f9f6f6;
+      border-radius: 6px;
+    }
+    .search button{
+      width: 45px;
+      height: 30px;
+      margin-left: -4px;
+      border-radius: 6px;
+      /* background-color: skyblue; */
+      font-style: '宋体';
+      color: #5e5d5d;
+    }
+    .search button:active{
+      background-color: rgb(233, 208, 176);
+    }
+    .futureList{
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      width: 1000px;
+      height: 450px;
+      left: 50%;
+      bottom: -480px;
+      transform: translateX(-50%);
+      /* background-color: green; */
+    }
+    .box1 .weatherShow{
+      display: block;
+      height: 130px;
+      font-size: 45px;
+      font-weight: 350;
+      color: rgb(156, 158, 160);
+      text-align: center;
+      line-height: 130px;
+    }
+    .futureList li{
+      display: block;
+      height: 450px;
+      overflow: hidden;
+      padding-top: 15px;
+      width: 280px;
+      /* background-color: skyblue; */
+    }
+    .futureList li img{
+      width: 80px;
+      height: 80px;
+      margin-left: 100px;
+      /* background-color: gold; */
+    }
+    .futureList li p{
+      display: block;
+      width: 250px;
+      height: 30px;
+      margin: auto;
+      line-height: 30px;
+      text-align: center;
+      font-family: '宋体';
+    }
+    .futureList li .show{
+      width: 270px;
+      height: 300px;
+      margin: auto;
+      background-color: #f9f6f6;
+    }
+   .futureList li .show p{
+    width: 270px;
+    height: 25px;
+    margin-top: 7px;
+   }
+   .box1 .temperature{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    left: 705px;
+    top: 60px;
+    font-size: 28px;
+    font-family: '宋体';
+    font-weight: 600;
+    text-align: center;
+    line-height: 100px;
+    color: rgb(142, 139, 139);
+    /* background-color: green; */
+   }
+   .day{
+    position: absolute;
+    width: 250px;
+    height: 60px;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: '宋体';
+    line-height: 60px;
+    text-align: center;
+    /* background-color: #e4b9b9; */
+    color: #989797;
+    left: 220px;
+    top: 50px;
+    z-index: 1;
+   }
+   .detail{
+    display: flex;
+    justify-content: space-between;
+    width: 950px;
+    height: 380px;
+    margin: auto;
+   }
+   .daytime , .nighttime{
+    padding-top: 20px;
+    width: 350px;
+    height: 360px;
+    text-align: center;
+    /* background-color: rgb(235, 190, 190); */
+   }
+   .daytime span, .nighttime span{
+    display: block;
+    font-size: 21px;
+    font-weight: 660;
+    font-family: '宋体';
+    margin-bottom: 20px;
+   }
+   .daytime p, .nighttime p{
+    margin: auto;
+    display: block;
+    font-size: 17px;
+    font-weight: 500;
+    width: 340px;
+    height: 50px;
+    /* background-color: #fff; */
+    line-height: 50px;
+    margin-top: 10px;
+    font-family: '楷书';
+   }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="day">{{dataList[0].date}}-星期{{dayTable[dataList[0].week-1]}}</div>
+    <div class="cityshow">{{city}}</div>
+    <div class="box1"> 
+      <p class="temperature">{{new Date().getHours()<18&&new Date().getHours()>6? dataList[0].daytemp:ataList[0].nighttemp}}℃</p>
+      <p class="weatherShow">{{dataList[0].dayweather}}</p>
+      <div class="search">
+      <input type="text" v-model.trim="mess" @keyup.enter="changeCity">
+      <button @click="changeCity">搜索</button>
+    </div>
+    <div class="detail">
+    <div class="daytime">
+      <span>日间气象</span>
+      <p>白天天气&nbsp;{{dataList[0].dayweather}}</p>
+      <p>白天气温&nbsp;{{dataList[0].daytemp}}℃</p>
+      <p>白天风向&nbsp;{{dataList[0].daywind}}</p>
+      <p>白天风力&nbsp;{{dataList[0].daypower}}</p>
+    </div>
+    <div class="nighttime">
+      <span>夜间气象</span>
+      <p>夜间天气&nbsp;{{dataList[0].nightweather}}</p>
+      <p>夜间气温&nbsp;{{dataList[0].nighttemp}}℃</p>
+      <p>夜间风向&nbsp;{{dataList[0].nightwind}}</p>
+      <p>夜间风力&nbsp;{{dataList[0].nightpower}}</p>
+    </div>
+  </div>
+      <div class="futureList">
+      <li v-for="(item,index) in limitList" :key="index">
+        <img src="#" alt="">
+        <p>{{limitList[index].dayweather}}</p>
+     <div class="show">
+      <p>{{limitList[index].date}}-星期{{dayTable[limitList[index].week-1]}}</p>
+      <p>白天天气:{{limitList[index].dayweather}}</p>
+      <p>白天气温:{{limitList[index].daytemp}}℃</p>
+      <p>白天风向:{{limitList[index].daywind}}</p>
+      <p>白天风力:{{limitList[index].daypower}}</p>
+      <p>夜间天气:{{limitList[index].nightweather}}</p>
+      <p>夜间气温:{{limitList[index].nighttemp}}℃</p>
+      <p>夜间风向:{{limitList[index].nightwind}}</p>
+      <p>夜间风力:{{limitList[index].nightpower}}</p>
+     </div>
+      </li>
+     
+    </div>
+    </div>
+  </div>
+</div>
+  <script>
+    const comparisonTable={
+      province:'省份',city:'城市',reporttime:'预报发布时间',dayweather:'天气',nightweather:'天气',
+      daytemp:'温度',nighttemp:'温度',daywind:'风向',nightwind:'风向',daypower:'风力',nightpower:'风力'
+    }
+    new Vue({
+      created(){
+    this.getAndUpdataDatas()
+      },
+      el:'#app',
+      data(){
+        return {
+          dataList:[],
+          mess:'',
+          reporttime:'',
+          city:'',
+          dayTable:'一二三四五六日',
+          comparisonTable
+        }
+      },
+      methods:{
+        async getAndUpdataDatas(mess){
+          if(!mess){
+           const city=JSON.parse(localStorage.getItem('_myWeather_report'))
+           if(city){
+            mess=city
+           }
+           else{
+            mess='北京市'
+           }
+          }
+          const {forecasts:[{casts,city,reporttime}]}=await getData(mess)
+          this.city=city
+          this.reporttime=reporttime
+          this.dataList=casts
+        },
+        changeCity(){
+          this.getAndUpdataDatas(this.mess)  
+        }
+        },
+        computed:{
+          limitList(){
+            return this.dataList.filter((item,index)=>index>0)
+          }
+        }
+    })
+  </script>
+</body>
+</html>
